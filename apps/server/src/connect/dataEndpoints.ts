@@ -2,11 +2,11 @@
 import type { Response } from "express";
 import he from "he";
 import Joi from "joi";
-import type { Aggregator } from "../shared/contract";
-import { Aggregators } from "../shared/contract";
-import { withValidateAggregatorInPath } from "../utils/validators";
-import { getAggregatorAdapter, getVC } from "../adapterIndex";
+
 import { VCDataTypes } from "@repo/utils";
+import type { Aggregator } from "../shared/contract";
+import { withValidateAggregatorInPath } from "../utils/validators";
+import { getAggregatorAdapter, getData, getVC } from "../adapterIndex";
 
 export interface AccountsDataQueryParameters {
   connectionId: string;
@@ -27,29 +27,36 @@ export interface TransactionsRequest {
   params: TransactionsDataPathParameters;
 }
 
-export const accountsDataHandler = withValidateAggregatorInPath(
-  async (req: AccountsRequest, res: Response) => {
+export const createAccountsDataHandler = (isVc: boolean) =>
+  withValidateAggregatorInPath(async (req: AccountsRequest, res: Response) => {
     const { aggregator, connectionId, userId } = req.params;
 
     const aggregatorAdapter = getAggregatorAdapter(aggregator);
     const aggregatorUserId = await aggregatorAdapter.ResolveUserId(userId);
 
+    const dataArgs = {
+      aggregator,
+      connectionId,
+      type: VCDataTypes.ACCOUNTS,
+      userId: aggregatorUserId,
+    };
+
     try {
-      const vc = await getVC({
-        aggregator,
-        connectionId,
-        type: VCDataTypes.ACCOUNTS,
-        userId: aggregatorUserId,
-      });
-      res.send({
-        jwt: vc,
-      });
+      if (isVc) {
+        const vc = await getVC(dataArgs);
+        res.send({
+          jwt: vc,
+        });
+      } else {
+        const data = await getData(dataArgs);
+
+        res.json(data);
+      }
     } catch (error) {
       res.status(400);
       res.send("Something went wrong");
     }
-  },
-);
+  });
 
 export interface IdentityDataParameters {
   connectionId: string;
@@ -57,29 +64,35 @@ export interface IdentityDataParameters {
   userId: string;
 }
 
-export const identityDataHandler = withValidateAggregatorInPath(
-  async (req: IdentityRequest, res: Response) => {
+export const createIdentityDataHandler = (isVc: boolean) =>
+  withValidateAggregatorInPath(async (req: IdentityRequest, res: Response) => {
     const { aggregator, connectionId, userId } = req.params;
 
     const aggregatorAdapter = getAggregatorAdapter(aggregator);
     const aggregatorUserId = await aggregatorAdapter.ResolveUserId(userId);
 
+    const dataArgs = {
+      aggregator,
+      connectionId,
+      type: VCDataTypes.IDENTITY,
+      userId: aggregatorUserId,
+    };
+
     try {
-      const vc = await getVC({
-        aggregator,
-        connectionId,
-        type: VCDataTypes.IDENTITY,
-        userId: aggregatorUserId,
-      });
-      res.send({
-        jwt: vc,
-      });
+      if (isVc) {
+        const vc = await getVC(dataArgs);
+        res.send({
+          jwt: vc,
+        });
+      } else {
+        const data = await getData(dataArgs);
+        res.json(data);
+      }
     } catch (error) {
       res.status(400);
       res.send("Something went wrong");
     }
-  },
-);
+  });
 
 export interface TransactionsDataQueryParameters {
   end_time: string;
@@ -92,49 +105,70 @@ export interface TransactionsDataPathParameters {
   userId: string;
 }
 
-export const transactionsDataHandler = withValidateAggregatorInPath(
-  async (req: TransactionsRequest, res: Response) => {
-    const { accountId, aggregator, userId } = req.params;
+export const createTransactionsDataHandler = (isVc: boolean) =>
+  withValidateAggregatorInPath(
+    async (req: TransactionsRequest, res: Response) => {
+      const { accountId, aggregator, userId } = req.params;
+      const { start_time, end_time } = req.query;
 
-    const schema = Joi.object({
-      end_time:
-        aggregator === Aggregators.SOPHTRON
-          ? Joi.string().required()
-          : Joi.string(),
-      start_time:
-        aggregator === Aggregators.SOPHTRON
-          ? Joi.string().required()
-          : Joi.string(),
-    });
+      const aggregatorAdapter = getAggregatorAdapter(aggregator);
+      const aggregatorUserId = await aggregatorAdapter.ResolveUserId(userId);
 
-    const { error } = schema.validate(req.query);
-
-    if (error) {
-      res.status(400);
-      res.send(he.encode(error.details[0].message));
-      return;
-    }
-
-    const { start_time, end_time } = req.query;
-
-    const aggregatorAdapter = getAggregatorAdapter(aggregator);
-    const aggregatorUserId = await aggregatorAdapter.ResolveUserId(userId);
-
-    try {
-      const vc = await getVC({
+      const dataArgs = {
         aggregator,
         type: VCDataTypes.TRANSACTIONS,
         userId: aggregatorUserId,
         accountId,
         startTime: start_time,
         endTime: end_time,
-      });
-      res.send({
-        jwt: vc,
-      });
-    } catch (error) {
-      res.status(400);
-      res.send("Something went wrong");
-    }
-  },
-);
+      };
+
+      let validationError: string | undefined;
+
+      if (
+        typeof aggregatorAdapter?.DataRequestValidators?.transactions ===
+        "function"
+      ) {
+        validationError =
+          aggregatorAdapter.DataRequestValidators?.transactions(req);
+      } else {
+        const schema = Joi.object({
+          end_time:
+            aggregator === ("sophtron" as Aggregator)
+              ? Joi.string().required()
+              : Joi.string(),
+          start_time:
+            aggregator === ("sophtron" as Aggregator)
+              ? Joi.string().required()
+              : Joi.string(),
+        });
+
+        const { error } = schema.validate(req.query);
+
+        if (error) {
+          validationError = error.details[0].message;
+        }
+      }
+
+      if (validationError) {
+        res.status(400);
+        res.send(he.encode(validationError));
+        return;
+      }
+
+      try {
+        if (isVc) {
+          const vc = await getVC(dataArgs);
+          res.send({
+            jwt: vc,
+          });
+        } else {
+          const data = await getData(dataArgs);
+          res.json(data);
+        }
+      } catch (error) {
+        res.status(400);
+        res.send("Something went wrong");
+      }
+    },
+  );

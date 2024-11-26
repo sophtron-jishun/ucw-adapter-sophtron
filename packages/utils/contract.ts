@@ -1,6 +1,5 @@
-// Do not remove seemingly unused exports here unless you
-// check all forked Adapter repositories
-// Example: JobTypes is used in the MX Adapter fork
+// Do not remove seemingly unused exports here unless you are absolutely sure
+// you know what you're doing. They may be used by forked Adapter repositories
 
 export enum WidgetJobTypes {
   AGGREGATION = 0,
@@ -30,9 +29,19 @@ export enum JobTypes {
   IDENTITY = "identity",
 }
 
+export enum MappedJobTypes {
+  AGGREGATE = "aggregate",
+  ALL = "aggregate_identity_verification",
+  FULLHISTORY = "aggregate_extendedhistory",
+  VERIFICATION = "verification",
+  IDENTITY = "aggregate_identity",
+}
+
 export type AdapterMap = {
-  vcAdapter: Function;
+  dataAdapter?: Function;
+  vcAdapter?: Function;
   widgetAdapter: WidgetAdapter;
+  testInstitutionAdapterName?: string;
 };
 
 export interface Credential {
@@ -150,6 +159,18 @@ export interface Pagination {
   total_pages?: number;
 }
 
+export interface CachedInstitution {
+  name: string;
+  keywords: string[];
+  logo: string;
+  url: string;
+  id: string;
+  is_test_bank: boolean | false;
+  routing_numbers: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [propName: string]: any;
+}
+
 export interface Institutions {
   institutions: Institution[];
   pagination?: Pagination;
@@ -160,6 +181,16 @@ export interface UpdateConnectionRequest {
   job_type?: string;
   credentials?: Credential[];
   challenges?: Challenge[];
+}
+
+export interface VCAdapterInput {
+  accountId?: string;
+  connectionId?: string;
+  endTime?: string;
+  aggregator: string;
+  startTime?: string;
+  type: VCDataTypes;
+  userId: string;
 }
 
 export interface WidgetAdapter {
@@ -196,5 +227,6 @@ export interface WidgetAdapter {
     single_account_select?: boolean,
     userId?: string,
   ) => Promise<Connection | undefined>;
-  RouteHandlers?: Record<string, (req: any, res: any) => Promise<void>>;
+  RouteHandlers?: Record<string, (req: any, res: any) => void>;
+  DataRequestValidators?: Record<string, (req: any) => string | undefined>;
 }

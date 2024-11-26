@@ -9,12 +9,16 @@ import {
   testExampleJobResponse,
   testAggregatorMemberGuid,
   testExampleInstitution,
+  testRouteHandlers,
+  testDataRequestValidators,
 } from "./constants";
+import { dataAdapter } from "./dataAdapter";
 import { getVC } from "./vc";
 
 export const adapterMapObject = {
   [TEST_EXAMPLE_A_AGGREGATOR_STRING]: {
     testInstitutionAdapterName: TEST_EXAMPLE_C_AGGREGATOR_STRING,
+    dataAdapter,
     vcAdapter: getVC,
     widgetAdapter: new TestAdapter({
       labelText: TEST_EXAMPLE_A_LABEL_TEXT,
@@ -22,13 +26,17 @@ export const adapterMapObject = {
     }),
   },
   [TEST_EXAMPLE_B_AGGREGATOR_STRING]: {
+    dataAdapter,
     vcAdapter: getVC,
     widgetAdapter: new TestAdapter({
       labelText: TEST_EXAMPLE_B_LABEL_TEXT,
       aggregator: TEST_EXAMPLE_B_AGGREGATOR_STRING,
+      routeHandlers: testRouteHandlers,
+      dataRequestValidators: testDataRequestValidators,
     }),
   },
   [TEST_EXAMPLE_C_AGGREGATOR_STRING]: {
+    dataAdapter,
     vcAdapter: getVC,
     widgetAdapter: new TestAdapter({
       labelText: TEST_EXAMPLE_C_LABEL_TEXT,

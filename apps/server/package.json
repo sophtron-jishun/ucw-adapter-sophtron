@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "version": "0.0.14-beta",
+  "version": "0.0.15-beta",
   "packageManager": "npm@10.8.2",
   "scripts": {
     "cypress:open": "cypress open --config-file cypress.config.ts",
@@ -38,6 +38,7 @@
     "@types/uuid": "^9.0.8",
     "@ucp-npm/mx-adapter": "^0.0.16-alpha",
     "@ucp-npm/template-adapter": "*",
+    "@ucp-npm/sophtron-adapter": "*",
     "assert-browserify": "^2.0.0",
     "axios": "^1.6.8",
     "buffer-browserify": "^0.2.5",
