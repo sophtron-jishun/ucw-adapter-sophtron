@@ -19,7 +19,7 @@ Once you have the npm package installed, you can set up the ucw to use it.
 
 In the `./apps/server/adapterSetup.ts` file, do the following:
 
-Import the `adapterMapObject` for sophtron:
+Import `getSophtronAdapterMapObject` from the Sophtron adapter package:
 
 ```typescript
 import { getSophtronAdapterMapObject } from "@ucp-npm/sophtron-adapter";
