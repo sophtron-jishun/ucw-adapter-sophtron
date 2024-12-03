@@ -26,7 +26,7 @@ describe("getVc", () => {
 
   it("gets accounts VC", async () => {
     const vc = await (
-      await createSophtronVC(dependencies)
+      createSophtronVC(dependencies)
     )({
       connectionId,
       type: VCDataTypes.ACCOUNTS,
@@ -37,7 +37,7 @@ describe("getVc", () => {
 
   it("gets identity VC", async () => {
     const vc = await (
-      await createSophtronVC(dependencies)
+      createSophtronVC(dependencies)
     )({
       connectionId,
       type: VCDataTypes.IDENTITY,
@@ -48,7 +48,7 @@ describe("getVc", () => {
 
   it("gets transactions VC", async () => {
     const vc = await (
-      await createSophtronVC(dependencies)
+      createSophtronVC(dependencies)
     )({
       connectionId,
       type: VCDataTypes.TRANSACTIONS,

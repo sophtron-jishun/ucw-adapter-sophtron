@@ -19,6 +19,5 @@ export function buildSophtronAuthCode(
   const authPath = url.substring(url.lastIndexOf("/")).toLowerCase();
   const text = httpMethod.toUpperCase() + "\n" + authPath;
   const b64Sig = getHmac(text, secret);
-  const authString = "FIApiAUTH:" + apiUserID + ":" + b64Sig + ":" + authPath;
-  return authString;
+  return "FIApiAUTH:" + apiUserID + ":" + b64Sig + ":" + authPath;
 }

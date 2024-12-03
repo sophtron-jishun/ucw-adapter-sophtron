@@ -1,3 +1,4 @@
+import { apiEndpoint } from "./consts";
 import SophtronBaseClient from "./apiClient.base";
 
 export default class SophtronClient extends SophtronBaseClient {
@@ -217,6 +218,6 @@ export default class SophtronClient extends SophtronBaseClient {
   }
 
   ping = async () => {
-    return await this.get(`${this.apiConfig.endpoint}/UserInstitution/Ping`);
+    return await this.get(`${apiEndpoint}/UserInstitution/Ping`);
   };
 }

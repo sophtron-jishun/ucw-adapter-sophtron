@@ -1,6 +1,7 @@
-import type { VCDependencies } from "models";
-import { getVc as getSophtronVc } from "./getVc";
 import { VCDataTypes } from "@repo/utils";
+
+import type { VCDependencies } from "./models";
+import { getVc as getSophtronVc } from "./getVc";
 
 export type DataParameters = {
   connectionId: string;

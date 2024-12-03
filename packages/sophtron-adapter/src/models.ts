@@ -1,14 +1,6 @@
 export type ApiCredentials = {
   clientId?: string;
   secret?: string;
-  username?: string;
-  password?: string;
-  partnerId?: string;
-  appKey?: string;
-  basePath?: string;
-  vcEndpoint?: string;
-  aggregator?: string;
-  available?: boolean;
   [key: string]: any;
 };
 

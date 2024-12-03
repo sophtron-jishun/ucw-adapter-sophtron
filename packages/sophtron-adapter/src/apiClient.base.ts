@@ -3,6 +3,7 @@ import type {
   IHttpClient,
   LogClient,
 } from "./models";
+import { apiEndpoint } from "./consts";
 import { buildSophtronAuthCode } from "./utils";
 import HttpClient from "./httpClient";
 
@@ -35,7 +36,7 @@ export default class SophtronBaseClient {
   async post(path: string, data?: any) {
     const authHeader = this.getAuthHeaders("post", path);
     return await this.httpClient.post(
-      this.apiConfig.endpoint + path,
+      apiEndpoint + path,
       data,
       authHeader,
     );
@@ -44,7 +45,7 @@ export default class SophtronBaseClient {
   async get(path: string) {
     const authHeader = this.getAuthHeaders("get", path);
     return await this.httpClient.get(
-      this.apiConfig.endpoint + path,
+      apiEndpoint + path,
       authHeader,
     );
   }
@@ -52,7 +53,7 @@ export default class SophtronBaseClient {
   async put(path: string, data: any) {
     const authHeader = this.getAuthHeaders("put", path);
     return await this.httpClient.put(
-      this.apiConfig.endpoint + path,
+      apiEndpoint + path,
       data,
       authHeader,
     );
@@ -61,7 +62,7 @@ export default class SophtronBaseClient {
   async del(path: string) {
     const authHeader = this.getAuthHeaders("delete", path);
     return await this.httpClient.del(
-      this.apiConfig.endpoint + path,
+      apiEndpoint + path,
       authHeader,
     );
   }
