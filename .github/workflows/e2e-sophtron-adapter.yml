@@ -59,11 +59,10 @@ jobs:
 
           # Vars
           echo -e "${{ needs.setup-env.outputs.env_vars }}" >> ${ENV_FILE_PATH}
-          echo RESOURCEVERSION="" >> ${ENV_FILE_PATH}
 
           # Secrets (can't load these from another job, due to GH security features)
-          echo SOPHTRONAPIUSERID=${{ secrets.SOPHTRON_API_USER_ID }} >> ${ENV_FILE_PATH}
-          echo SOPHTRONAPIUSERSECRET=${{ secrets.SOPHTRON_API_USER_SECRET }} >> ${ENV_FILE_PATH}
+          echo SOPHTRON_API_USER_ID=${{ secrets.SOPHTRON_API_USER_ID }} >> ${ENV_FILE_PATH}
+          echo SOPHTRON_API_USER_SECRET=${{ secrets.SOPHTRON_API_USER_SECRET }} >> ${ENV_FILE_PATH}
 
       - name: Cypress run
         uses: cypress-io/github-action@v6
@@ -72,7 +71,7 @@ jobs:
         with:
           config-file: cypress.config.ts
           project: ${{ vars.PACKAGE_DIR }}
-          start: npm run dev:e2e
+          start: npm run start:e2e
           wait-on: "http://localhost:8080/health, http://localhost:9200"
 
       - name: Upload screenshots
