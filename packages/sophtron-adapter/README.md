@@ -13,6 +13,7 @@ Navigate to your forked project and, from the root of the project, run:
 ```bash
 npm i @ucp-npm/sophtron-adapter --workspace apps/server
 ```
+
 ## Usage
 
 Once you have the npm package installed, you can set up the ucw to use it.
@@ -35,21 +36,21 @@ Next, look for the line that starts with `export const adapterMap = {`, and add 
 
 ```typescript
 const sophtronAdapterMapObject = getSophtronAdapterMapObject({
-    logClient: logger,
-    aggregatorCredentials: {
-        username: config.SophtronApiUserId,
-        password: config.SophtronApiUserSecret,
-    },
-    envConfig: {
-        HOSTURL: config.HOSTURL
-    },
+  logClient: logger,
+  aggregatorCredentials: {
+    clientId: config.SOPHTRON_API_USER_ID,
+    secret: config.SOPHTRON_API_USER_SECRET,
+  },
+  envConfig: {
+    HOSTURL: config.HOST_URL,
+  },
 });
 
 export const adapterMap = {
   ...sophtronAdapterMapObject,
   ...testAdapterMapObject,
 };
-````
+```
 
 The `logClient` dependency is provided by the Universal Connect Widget.
 
@@ -60,4 +61,3 @@ https://www.npmjs.com/package/@ucp-npm/sophtron-adapter
 ## More Info
 
 See [https://universalconnectproject.org/](https://universalconnectproject.org/) for more information.
-

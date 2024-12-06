@@ -11,11 +11,11 @@ const sophtronAdapterMapObject: Record<string, AdapterMap> =
   getSophtronAdapterMapObject({
     logClient: logger,
     aggregatorCredentials: {
-      clientId: config.SophtronApiUserId,
-      secret: config.SophtronApiUserSecret,
+      clientId: config.SOPHTRON_API_USER_ID,
+      secret: config.SOPHTRON_API_USER_SECRET,
     },
     envConfig: {
-      HOSTURL: config.HOSTURL,
+      HOSTURL: config.HOST_URL,
     },
   });
 
