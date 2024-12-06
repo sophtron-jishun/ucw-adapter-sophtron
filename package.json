@@ -1,5 +1,6 @@
 {
   "name": "ucw-app",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
     "build": "turbo build",
@@ -7,7 +8,7 @@
     "copySophtronTestPreferences": "cp ./apps/server/cachedDefaults/testData/sophtronTestPreferences.json ./apps/server/cachedDefaults/preferences.json",
     "dev": "turbo dev",
     "dev:debug": "turbo dev:debug",
-    "dev:e2e": "turbo dev:e2e",
+    "start:e2e": "turbo start:e2e",
     "lint": "turbo lint",
     "test": "turbo run test",
     "test:watch": "turbo run test:watch",

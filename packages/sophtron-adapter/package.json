@@ -22,7 +22,6 @@
   },
   "scripts": {
     "dev": "nodemon",
-    "dev:e2e": "npm run dev",
     "cypress:open": "cypress open --config-file cypress.config.ts",
     "cypress:run": "cypress run --config-file cypress.config.ts",
     "build:cjs": "tsc -p tsconfig.cjs.json",

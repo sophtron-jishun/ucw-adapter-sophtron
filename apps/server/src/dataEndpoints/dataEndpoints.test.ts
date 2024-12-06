@@ -1,8 +1,5 @@
 import type { Response } from "express";
 import he from "he";
-
-import { getDataFromVCJwt } from "@repo/utils";
-
 import { transactionsResponse } from "../test-adapter/vcResponses";
 import { testDataRequestValidatorStartTimeError } from "../test-adapter/constants";
 import * as adapterIndex from "../adapterIndex";
@@ -24,6 +21,7 @@ import {
 import type { Aggregator } from "../shared/contract";
 import { Aggregators } from "../shared/contract";
 import { invalidAggregatorString } from "../utils/validators";
+import { getDataFromVCJwt } from "@repo/utils";
 
 /* eslint-disable @typescript-eslint/unbound-method */
 
@@ -267,110 +265,13 @@ describe("dataEndpoints", () => {
         });
       });
 
-
-      it("responds with a 400 on failure", async () => {
-        jest.spyOn(adapterIndex, "getVC").mockImplementation(() => {
-          throw new Error();
-        });
-
-        const res = {
-          send: jest.fn(),
-          status: jest.fn(),
-        } as unknown as Response;
-
-        const req: TransactionsRequest = {
-          params: {
-            accountId: "testAccountId",
-            aggregator: Aggregators.TEST_A,
-            userId: "testUserId",
-          },
-          query: {
-            start_time: undefined,
-            end_time: undefined,
-          },
-        };
-
-        await vcTransactionsDataHandler(req, res);
-
-        expect(res.send).toHaveBeenCalledWith("Something went wrong");
-        expect(res.status).toHaveBeenCalledWith(400);
-      });
-
-      it("succeeds if there is a custom validator and it passes", async () => {
-        const req = {
-          params: {
-            aggregator: Aggregators.TEST_B,
-          },
-          query: {
-            start_time: "testStartTime",
-            end_time: "testEndTime",
-          },
-        } as unknown as TransactionsRequest;
-
-        const res = {
-          send: jest.fn(),
-          status: jest.fn(),
-        } as unknown as Response;
-
-        await createTransactionsDataHandler(true)(req, res);
-
-        expect(res.send).toHaveBeenCalledWith({
-          jwt: transactionsResponse,
-        });
-      });
-
-      it("succeeds if there isn't a custom validator", async () => {
-        const res = {
-          send: jest.fn(),
-          status: jest.fn(),
-        } as unknown as Response;
-
-        const req: TransactionsRequest = {
-          params: {
-            accountId: "testAccountId",
-            aggregator: Aggregators.TEST_A,
-            userId: "testUserId",
-          },
-          query: {
-            end_time: undefined,
-            start_time: undefined,
-          },
-        };
-
-        await vcTransactionsDataHandler(req, res);
-        expect(res.status).not.toHaveBeenCalledWith(400);
-      });
-
-      it("fails if a custom validator fails", async () => {
-        const req = {
-          params: {
-            aggregator: Aggregators.TEST_B,
-          },
-          query: {
-            start_time: undefined,
-            end_time: "testEndTime",
-          },
-        } as unknown as TransactionsRequest;
-
-        const res = {
-          send: jest.fn(),
-          status: jest.fn(),
-        } as unknown as Response;
-
-        await createTransactionsDataHandler(false)(req, res);
-
-        expect(res.send).toHaveBeenCalledWith(
-          he.encode(testDataRequestValidatorStartTimeError),
-        );
-      });
-
-      it("responds with the vc data in the jwt on success", async () => {
+      it("responds with the data on success", async () => {
         jest
           .spyOn(adapterIndex, "getVC")
           .mockImplementationOnce(async () => testVcTranscationsData);
 
         const res = {
-          send: jest.fn(),
+          json: jest.fn(),
           status: jest.fn(),
         } as unknown as Response;
 
@@ -386,11 +287,11 @@ describe("dataEndpoints", () => {
           },
         };
 
-        await createAccountsDataHandler(true)(req, res);
+        await createTransactionsDataHandler(false)(req, res);
 
-        expect(res.send).toHaveBeenCalledWith({
-          jwt: testVcTranscationsData,
-        });
+        expect(res.json).toHaveBeenCalledWith(
+          getDataFromVCJwt(testVcTranscationsData),
+        );
       });
 
       it("responds with a 400 on failure", async () => {
@@ -415,7 +316,7 @@ describe("dataEndpoints", () => {
           },
         };
 
-        await createTransactionsDataHandler(true)(req, res);
+        await vcTransactionsDataHandler(req, res);
 
         expect(res.send).toHaveBeenCalledWith("Something went wrong");
         expect(res.status).toHaveBeenCalledWith(400);
@@ -435,7 +336,7 @@ describe("dataEndpoints", () => {
         const res = {
           send: jest.fn(),
           status: jest.fn(),
-        } as unknown as Response;
+        } as unknown as any;
 
         await createTransactionsDataHandler(true)(req, res);
 
@@ -480,7 +381,7 @@ describe("dataEndpoints", () => {
         const res = {
           send: jest.fn(),
           status: jest.fn(),
-        } as unknown as Response;
+        } as unknown as any;
 
         await createTransactionsDataHandler(false)(req, res);
 

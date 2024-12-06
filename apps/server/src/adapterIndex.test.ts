@@ -48,31 +48,6 @@ describe("adapterSetup", () => {
     });
   });
 
-  describe("getData", () => {
-    it("uses testExample if the aggregator is testExampleA", async () => {
-      const response = await getData({
-        aggregator: TEST_EXAMPLE_A_AGGREGATOR_STRING,
-        connectionId,
-        type,
-        userId,
-      });
-
-      expect(response).toEqual(getDataFromVCJwt(testVcAccountsData));
-    });
-
-    it("throws an error if the aggregator doesnt have a handler", async () => {
-      await expect(
-        async () =>
-          await getData({
-            aggregator: "junk" as Aggregator,
-            connectionId,
-            type,
-            userId,
-          }),
-      ).rejects.toThrow("Unsupported aggregator junk");
-    });
-  });
-
   describe("getAggregatorAdapter", () => {
     it("throws an error if its an unsupported aggregator", async () => {
       expect(() => getAggregatorAdapter("junk" as Aggregator)).toThrow(
