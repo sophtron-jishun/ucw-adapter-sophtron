@@ -61,7 +61,7 @@ jobs:
           echo -e "${{ needs.setup-env.outputs.env_vars }}" >> ${ENV_FILE_PATH}
 
           # Secrets (can't load these from another job, due to GH security features)
-          echo SOPHTRON_API_USERID=${{ secrets.SOPHTRON_API_USER_ID }} >> ${ENV_FILE_PATH}
+          echo SOPHTRON_API_USER_ID=${{ secrets.SOPHTRON_API_USER_ID }} >> ${ENV_FILE_PATH}
           echo SOPHTRON_API_USER_SECRET=${{ secrets.SOPHTRON_API_USER_SECRET }} >> ${ENV_FILE_PATH}
 
       - name: Cypress run
