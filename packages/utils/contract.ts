@@ -40,8 +40,7 @@ export enum MappedJobTypes {
 export type AdapterMap = {
   dataAdapter?: Function;
   vcAdapter?: Function;
-  widgetAdapter: WidgetAdapter;
-  testInstitutionAdapterName?: string;
+  createWidgetAdapter: () => WidgetAdapter;
 };
 
 export interface Credential {
