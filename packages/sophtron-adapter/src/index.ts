@@ -12,9 +12,10 @@ export const getSophtronAdapterMapObject = (
     sophtron: {
       dataAdapter: createDataAdapter(dependencies),
       vcAdapter: createSophtronVC(dependencies),
-      widgetAdapter: new SophtronAdapter({
-        dependencies,
-      }),
+      createWidgetAdapter: () =>
+        new SophtronAdapter({
+          dependencies,
+        }),
     } as AdapterMap,
   } as Record<string, AdapterMap>;
 };
