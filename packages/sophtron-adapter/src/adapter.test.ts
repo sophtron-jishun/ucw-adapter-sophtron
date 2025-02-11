@@ -725,9 +725,14 @@ describe("sophtron adapter", () => {
         challenges: [
           {
             id: "TokenRead",
-            type: ChallengeType.TOKEN,
-            data: testTokenRead,
-            question: `Please approve from your secure device with the following token: ${testTokenRead}`,
+            type: ChallengeType.OPTIONS,
+            data: [
+                {
+                  "key": "Please complete verification and click here.",
+                  "value": "token_read",
+                },
+              ],
+            question: `Please approve from your secure device with following token: ${testTokenRead}`,
           },
         ],
         id: testUserInstitutionId,
