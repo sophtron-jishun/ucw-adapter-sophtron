@@ -23,8 +23,7 @@ export const testExampleOauthInstitution = {
 }
 
 export const testExampleInstitution = {
-  logo_url:
-    "https://content.moneydesktop.com/storage/MD_Assets/Ipad%20Logos/100x100/INS-3aeb38da-26e4-3818-e0fa-673315ab7754_100x100.png",
+  logo_url: "https://ucp-ui-f6cdc44acc3f.herokuapp.com/ucpLogo.png",
   name: "testInstitutionName",
   oauth: false,
   url: "testInstitutionUrl",
@@ -37,10 +36,8 @@ export const testExampleCredentials = {
 };
 
 export const testExampleJobResponse = {
-  job: {
-    guid: "testAggregatorMemberGuid",
-    job_type: WidgetJobTypes.AGGREGATION,
-  },
+  guid: "testAggregatorMemberGuid",
+  job_type: WidgetJobTypes.COMBINATION,
 };
 
 export const testRouteHandlers = {

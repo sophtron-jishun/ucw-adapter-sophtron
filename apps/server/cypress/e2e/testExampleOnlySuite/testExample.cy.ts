@@ -1,8 +1,9 @@
-import { JobTypes } from "@repo/utils";
+import { ComboJobTypes, JobTypes } from "@repo/utils";
 import {
   clickContinue,
   expectConnectionSuccess,
   generateDataTests,
+  MEMBER_CONNECTED_EVENT_TYPE,
   visitWithPostMessageSpy,
 } from "@repo/utils-dev-dependency";
 import { TEST_EXAMPLE_B_AGGREGATOR_STRING } from "../../../src/test-adapter/constants";
@@ -14,12 +15,12 @@ import {
   selectTestExampleAAccount,
 } from "../../shared/utils/testExample";
 
-const makeAnAConnection = async (jobType) => {
+const makeAnAConnection = async (jobTypes: ComboJobTypes[]) => {
   searchAndSelectTestExampleA();
   enterTestExampleACredentials();
   clickContinue();
 
-  if ([JobTypes.VERIFICATION, JobTypes.ALL].includes(jobType)) {
+  if (jobTypes.includes(ComboJobTypes.ACCOUNT_NUMBER)) {
     selectTestExampleAAccount();
     clickContinue();
   }
@@ -27,12 +28,12 @@ const makeAnAConnection = async (jobType) => {
   expectConnectionSuccess();
 };
 
-const makeABConnection = async (jobType) => {
+const makeABConnection = async (jobTypes: ComboJobTypes[]) => {
   searchAndSelectTestExampleB();
   enterTestExampleBCredentials();
   clickContinue();
 
-  if ([JobTypes.VERIFICATION, JobTypes.ALL].includes(jobType)) {
+  if (jobTypes.includes(ComboJobTypes.ACCOUNT_NUMBER)) {
     selectTestExampleAAccount();
     clickContinue();
   }
@@ -96,16 +97,14 @@ describe("testExampleA and B aggregators", () => {
     const userId = Cypress.env("userId");
 
     visitWithPostMessageSpy(
-      `/widget?job_type=${JobTypes.VERIFICATION}&user_id=${userId}`,
+      `/widget?jobTypes=${ComboJobTypes.ACCOUNT_NUMBER}&user_id=${userId}`,
     )
-      .then(() => makeABConnection(JobTypes.VERIFICATION))
+      .then(() => makeABConnection([ComboJobTypes.ACCOUNT_NUMBER]))
       .then(() => {
         cy.get("@postMessage", { timeout: 90000 }).then((mySpy) => {
           const connection = (mySpy as any)
             .getCalls()
-            .find(
-              (call) => call.args[0].type === "vcs/connect/memberConnected",
-            );
+            .find((call) => call.args[0].type === MEMBER_CONNECTED_EVENT_TYPE);
           const { metadata } = connection?.args[0];
           memberGuid = metadata.member_guid;
 

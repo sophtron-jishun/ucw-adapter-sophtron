@@ -2,6 +2,13 @@
 // check all forked Adapter repositories
 // Example: JobTypes is used in the MX Adapter fork
 
+export enum ComboJobTypes {
+  ACCOUNT_NUMBER = "account_verification",
+  ACCOUNT_OWNER = "identity_verification",
+  TRANSACTIONS = "transactions",
+  TRANSACTION_HISTORY = "transaction_history",
+}
+
 export enum WidgetJobTypes {
   AGGREGATION = 0,
   VERIFICATION = 1,
@@ -14,6 +21,7 @@ export enum WidgetJobTypes {
   MICRO_DEPOSIT = 8,
   TAX = 9,
   CREDIT_REPORT = 10,
+  COMBINATION = 11,
 }
 
 export enum VCDataTypes {
@@ -28,6 +36,14 @@ export enum JobTypes {
   FULLHISTORY = "fullhistory",
   VERIFICATION = "verification",
   IDENTITY = "identity",
+}
+
+export enum MappedJobTypes {
+  AGGREGATE = "aggregate",
+  ALL = "aggregate_identity_verification",
+  FULLHISTORY = "aggregate_extendedhistory",
+  VERIFICATION = "verification",
+  IDENTITY = "aggregate_identity",
 }
 
 export type AdapterMap = {
@@ -108,6 +124,7 @@ export enum ConnectionStatus {
 export interface CreateConnectionRequest {
   id?: string;
   initial_job_type?: string;
+  jobTypes?: ComboJobTypes[];
   background_aggregation_is_disabled?: boolean;
   credentials: Credential[];
   institution_id: string;
