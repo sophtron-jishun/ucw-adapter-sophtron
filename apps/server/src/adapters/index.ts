@@ -5,7 +5,7 @@ import * as logger from "../infra/logger";
 import { AnalyticsClient } from "../services/analyticsClient";
 import { resolveInstitutionAggregator } from "../services/institutionResolver";
 import { set } from "../services/storageClient/redis";
-import type { Context, MappedJobTypes, Aggregator } from "../shared/contract";
+import type { Context, Aggregator } from "../shared/contract";
 import type {
   Challenge,
   Connection,
@@ -17,35 +17,6 @@ import type {
 } from "@repo/utils";
 
 import { ConnectionStatus, OAuthStatus } from "../shared/contract";
-import { decodeAuthToken, mapJobType } from "../utils";
-import { v4 as uuidV4 } from "uuid";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function instrumentation(context: Context, input: any) {
-  const { user_id } = input;
-  context.user_id = user_id;
-
-  if (!user_id) {
-    return false;
-  }
-
-  if (Boolean(input.current_member_guid) && Boolean(input.current_aggregator)) {
-    context.aggregator = input.current_aggregator;
-    context.connection_id = input.current_member_guid;
-  }
-  if (input.auth != null) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    context.auth = decodeAuthToken(input.auth) as any;
-  }
-  context.partner = input.current_partner;
-  context.job_type = mapJobType(input.job_type);
-  context.scheme = input.scheme ?? "vcs";
-  context.oauth_referral_source = input.oauth_referral_source ?? "BROWSER";
-  context.single_account_select = input.single_account_select;
-  context.session_id = input.session_id?.replace('undefined', '') || uuidV4();
-  context.updated = true;
-  return true;
-}
 
 export class AggregatorAdapterBase {
   context: Context;
@@ -59,15 +30,13 @@ export class AggregatorAdapterBase {
   }
 
   async init() {
-    this.analyticsClient = new AnalyticsClient('temp_fake_authToken');
+    this.analyticsClient = new AnalyticsClient("temp_fake_authToken");
     try {
       if (this.context?.aggregator) {
-        this.aggregatorAdapter = createAggregatorWidgetAdapter(
-          {
-            aggregator: this.context?.aggregator as Aggregator,
-            sessionId: this.context.session_id
-          }
-        );
+        this.aggregatorAdapter = createAggregatorWidgetAdapter({
+          aggregator: this.context?.aggregator as Aggregator,
+          sessionId: this.context.sessionId,
+        });
       }
       this.aggregators = aggregators;
       return true;
@@ -81,7 +50,7 @@ export class AggregatorAdapterBase {
   async resolveInstitution(id: string): Promise<Institution> {
     const resolvedInstitution = await resolveInstitutionAggregator(
       id,
-      this.context.job_type as MappedJobTypes,
+      this.context.jobTypes,
     );
     this.context.aggregator = resolvedInstitution.aggregator;
     this.context.updated = true;
@@ -201,14 +170,12 @@ export class AggregatorAdapterBase {
     if (ret.auth_status === OAuthStatus.ERROR) {
       ret.error_reason = connection.status;
     }
-    return { oauth_state: ret };
+    return ret;
   }
 
   async getOauthStates(memberGuid: string) {
     const state = await this.getOauthState(memberGuid);
-    return {
-      oauth_states: [state.oauth_state],
-    };
+    return [state];
   }
 
   async deleteConnection(connection_id: string): Promise<void> {
