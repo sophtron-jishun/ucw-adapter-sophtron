@@ -16,19 +16,23 @@
       "get": {
         "parameters": [
           {
-            "description": "The type of the job to be performed",
-            "name": "job_type",
+            "description": "The types of jobs to be performed",
+            "name": "jobTypes",
             "in": "query",
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "aggregate",
-                "all",
-                "fullhistory",
-                "verification",
-                "identity"
-              ]
+              "example": "account_verification,identity_verification,transactions,transaction_history"
+            }
+          },
+          {
+            "description": "The id for the session",
+            "name": "sessionId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "testSessionId"
             }
           },
           {
@@ -639,6 +643,15 @@
             "name": "account_id",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The connection id, returns accounts of specific connection_id if provided, depends on adapter implementation",
+            "name": "connection_id",
+            "in": "query",
+            "required": false,
             "schema": {
               "type": "string"
             }

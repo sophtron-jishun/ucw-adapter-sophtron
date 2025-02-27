@@ -1,6 +1,13 @@
 // Do not remove seemingly unused exports here unless you are absolutely sure
 // you know what you're doing. They may be used by forked Adapter repositories
 
+export enum ComboJobTypes {
+  ACCOUNT_NUMBER = "account_verification",
+  ACCOUNT_OWNER = "identity_verification",
+  TRANSACTIONS = "transactions",
+  TRANSACTION_HISTORY = "transaction_history",
+}
+
 export enum WidgetJobTypes {
   AGGREGATION = 0,
   VERIFICATION = 1,
@@ -13,6 +20,7 @@ export enum WidgetJobTypes {
   MICRO_DEPOSIT = 8,
   TAX = 9,
   CREDIT_REPORT = 10,
+  COMBINATION = 11,
 }
 
 export enum VCDataTypes {
@@ -21,12 +29,12 @@ export enum VCDataTypes {
   TRANSACTIONS = "transactions",
 }
 
-export enum JobTypes {
+export enum MappedJobTypes {
   AGGREGATE = "aggregate",
-  ALL = "all",
-  FULLHISTORY = "fullhistory",
+  ALL = "aggregate_identity_verification",
+  FULLHISTORY = "aggregate_extendedhistory",
   VERIFICATION = "verification",
-  IDENTITY = "identity",
+  IDENTITY = "aggregate_identity",
 }
 
 export enum MappedJobTypes {
@@ -40,7 +48,11 @@ export enum MappedJobTypes {
 export type AdapterMap = {
   dataAdapter?: Function;
   vcAdapter?: Function;
-  createWidgetAdapter: () => WidgetAdapter;
+  createWidgetAdapter: ({
+    sessionId,
+  }: {
+    sessionId?: string | undefined;
+  }) => WidgetAdapter;
 };
 
 export interface Credential {
@@ -115,6 +127,7 @@ export enum ConnectionStatus {
 export interface CreateConnectionRequest {
   id?: string;
   initial_job_type?: string;
+  jobTypes?: ComboJobTypes[];
   background_aggregation_is_disabled?: boolean;
   credentials: Credential[];
   institution_id: string;
@@ -178,6 +191,7 @@ export interface Institutions {
 export interface UpdateConnectionRequest {
   id: string | undefined;
   job_type?: string;
+  jobTypes?: ComboJobTypes[];
   credentials?: Credential[];
   challenges?: Challenge[];
 }
@@ -226,6 +240,6 @@ export interface WidgetAdapter {
     single_account_select?: boolean,
     userId?: string,
   ) => Promise<Connection | undefined>;
-  RouteHandlers?: Record<string, (req: any, res: any) => void>;
   DataRequestValidators?: Record<string, (req: any) => string | undefined>;
+  HandleOauthResponse?: (request: any) => Promise<Connection>;
 }

@@ -3,9 +3,10 @@
 
 test.js
 test.ts
+staging.env
+production.env
+
 .env
-.env.*
-!.env.example
 
 # Logs
 logs
@@ -24,6 +25,8 @@ out/
 build/
 coverage/
 .ngrok/
+
+.eslintcache
 
 # See https://github.com/vitejs/vite/issues/13267
 vite.config*timestamp*
@@ -47,10 +50,10 @@ cypress.env.json
 cypress/screenshots/
 cypress/videos/
 apps/server/cypress/screenshots
-/test-results/
-/playwright-report/
+test-results/
+playwright-report/
 /blob-report/
-/playwright/.cache/
+playwright/.cache/
 
 apps/server/cachedDefaults/preferences.json
 apps/server/cypress.env.json
