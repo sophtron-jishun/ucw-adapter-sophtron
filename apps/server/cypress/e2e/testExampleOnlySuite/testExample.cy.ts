@@ -1,4 +1,4 @@
-import { ComboJobTypes, JobTypes } from "@repo/utils";
+import { ComboJobTypes } from "@repo/utils";
 import {
   clickContinue,
   expectConnectionSuccess,
@@ -63,7 +63,7 @@ const verifyTransactionsValidatorSuccess = ({ accountId, userId }) => {
     })
     .then((dataResponse) => {
       expect(dataResponse.status).to.equal(200);
-      expect(dataResponse.body.transactions.length).to.be.greaterThan(-1);
+      expect(dataResponse.body.transactions.length).to.be.greaterThan(0);
     });
 };
 
@@ -81,6 +81,24 @@ const verifyTransactionsValidatorError = ({ accountId, userId }) => {
     });
 };
 
+const verifyTransactionsWithConnectionIdSuccess = ({
+  accountId,
+  connectionId,
+  userId,
+}) => {
+  const url = `/data/aggregator/${TEST_EXAMPLE_B_AGGREGATOR_STRING}/user/${userId}/account/${accountId}/transactions?connection_id=${connectionId}&start_time=2021/1/1`;
+
+  return cy
+    .request({
+      method: "GET",
+      url: `/api${url}`,
+    })
+    .then((dataResponse) => {
+      expect(dataResponse.status).to.equal(200);
+      expect(dataResponse.body.transactions.length).to.be.equal(0);
+    });
+};
+
 describe("testExampleA and B aggregators", () => {
   generateDataTests({
     makeAConnection: makeAnAConnection,
@@ -92,7 +110,7 @@ describe("testExampleA and B aggregators", () => {
     transactionsQueryString: "?start_time=2021/1/1",
   });
 
-  it(`makes a connection with jobType: ${JobTypes.VERIFICATION}, gets the transaction data from the data endpoints, and tests validator`, () => {
+  it(`makes a connection with jobType: ${ComboJobTypes.ACCOUNT_NUMBER}, gets the transaction data from the data endpoints, and tests validator`, () => {
     let memberGuid: string;
     const userId = Cypress.env("userId");
 
@@ -118,6 +136,11 @@ describe("testExampleA and B aggregators", () => {
             });
             verifyTransactionsValidatorError({
               accountId,
+              userId,
+            });
+            verifyTransactionsWithConnectionIdSuccess({
+              accountId,
+              connectionId: memberGuid,
               userId,
             });
           });
