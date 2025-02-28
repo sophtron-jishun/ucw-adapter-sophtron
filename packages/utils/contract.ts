@@ -37,14 +37,6 @@ export enum MappedJobTypes {
   IDENTITY = "aggregate_identity",
 }
 
-export enum MappedJobTypes {
-  AGGREGATE = "aggregate",
-  ALL = "aggregate_identity_verification",
-  FULLHISTORY = "aggregate_extendedhistory",
-  VERIFICATION = "verification",
-  IDENTITY = "aggregate_identity",
-}
-
 export type AdapterMap = {
   dataAdapter?: Function;
   vcAdapter?: Function;
