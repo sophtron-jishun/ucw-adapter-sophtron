@@ -3,7 +3,7 @@ import type {
   CreateConnectionRequest,
   UpdateConnectionRequest,
 } from "@repo/utils";
-import { ChallengeType, ConnectionStatus } from "@repo/utils";
+import { ChallengeType, ComboJobTypes, ConnectionStatus } from "@repo/utils";
 
 import {
   SOPHTRON_ANSWER_JOB_MFA_PATH,
@@ -33,7 +33,11 @@ import {
 } from "./test/testData/sophtronMember";
 import { server } from "./test/testServer";
 import { SophtronAdapter } from "./adapter";
-import { SOPHTRON_ADAPTER_NAME, testDataRequestValidatorEndTimeError, testDataValidatorStartTimeError } from "./constants";
+import {
+  SOPHTRON_ADAPTER_NAME,
+  testDataRequestValidatorEndTimeError,
+  testDataValidatorStartTimeError,
+} from "./constants";
 
 import { logClient } from "./test/utils/logClient";
 
@@ -184,17 +188,6 @@ describe("sophtron adapter", () => {
   });
 
   describe("CreateConnection", () => {
-    it("does nothing if there is no job type", async () => {
-      const response = await adapter.CreateConnection(
-        {
-          initial_job_type: undefined,
-        } as CreateConnectionRequest,
-        testUserId,
-      );
-
-      expect(response).toBeUndefined();
-    });
-
     it("uses a None password if there is no password specified", async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let createMemberPayload: any;
@@ -214,7 +207,7 @@ describe("sophtron adapter", () => {
               id: "username",
             },
           ],
-          initial_job_type: "agg",
+          jobTypes: [ComboJobTypes.TRANSACTIONS],
           institution_id: testId,
         } as CreateConnectionRequest,
         testUserId,
@@ -247,7 +240,7 @@ describe("sophtron adapter", () => {
               value: passwordValue,
             },
           ],
-          initial_job_type: "agg",
+          jobTypes: [ComboJobTypes.TRANSACTIONS],
           institution_id: testId,
         } as CreateConnectionRequest,
         testUserId,
@@ -341,6 +334,7 @@ describe("sophtron adapter", () => {
             },
           ],
           id: testId,
+          jobTypes: [ComboJobTypes.TRANSACTIONS],
         } as UpdateConnectionRequest,
         testUserId,
       );
@@ -727,11 +721,11 @@ describe("sophtron adapter", () => {
             id: "TokenRead",
             type: ChallengeType.OPTIONS,
             data: [
-                {
-                  "key": "Please complete verification and click here.",
-                  "value": "token_read",
-                },
-              ],
+              {
+                key: "Please complete verification and click here.",
+                value: "token_read",
+              },
+            ],
             question: `Please approve from your secure device with following token: ${testTokenRead}`,
           },
         ],
@@ -1002,7 +996,7 @@ describe("sophtron adapter", () => {
 
     describe("transactionValidator", () => {
       it("returns transaction data, if it passes the transactionValidator", async () => {
-        const validatorSpy = jest.spyOn(dataRequestValidators, 'transactions');
+        const validatorSpy = jest.spyOn(dataRequestValidators, "transactions");
         const req = {
           query: {
             start_time: "testStartTime",
@@ -1036,7 +1030,7 @@ describe("sophtron adapter", () => {
           },
         };
 
-        const validatorResult =dataRequestValidators.transactions(req);
+        const validatorResult = dataRequestValidators.transactions(req);
 
         expect(validatorResult).toEqual(testDataRequestValidatorEndTimeError);
       });
