@@ -40,11 +40,11 @@ export default class SophtronV2Client extends SophtronBaseClient {
   }
 
   async createMember(
-    customerId,
+    customerId: string,
     jobTypes: ComboJobTypes[],
-    username,
-    password,
-    institutionId,
+    username: string,
+    password: string,
+    institutionId: string,
   ) {
     return await this.post(
       `/v2/customers/${customerId}/members/${convertToSophtronJobTypes(jobTypes)}`,
@@ -56,19 +56,19 @@ export default class SophtronV2Client extends SophtronBaseClient {
     );
   }
 
-  async updateMember(customerId, memberId, jobTypes, username, password) {
+  async updateMember(
+    customerId: string,
+    memberId: string,
+    jobTypes: ComboJobTypes[],
+    username: string,
+    password: string,
+  ) {
     return await this.put(
       `/v2/customers/${customerId}/members/${memberId}/${convertToSophtronJobTypes(jobTypes)}`,
       {
         UserName: username,
         Password: password,
       },
-    );
-  }
-
-  async refreshMember(customerId, memberId, jobTypes) {
-    return await this.post(
-      `/v2/customers/${customerId}/members/${memberId}/${convertToSophtronJobTypes(jobTypes)}`,
     );
   }
 
