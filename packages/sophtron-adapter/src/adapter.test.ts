@@ -371,7 +371,7 @@ describe("sophtron adapter", () => {
         id: getMemberData.MemberID,
         institution_code: getMemberData.InstitutionID,
         aggregator: SOPHTRON_ADAPTER_NAME,
-        user_id: testUserId,
+        userId: testUserId,
       });
 
       expect(getMemberParams).toEqual({
@@ -394,7 +394,7 @@ describe("sophtron adapter", () => {
         id: getMemberData.MemberID,
         institution_code: getMemberData.InstitutionID,
         aggregator: SOPHTRON_ADAPTER_NAME,
-        user_id: testUserId,
+        userId: testUserId,
       });
     });
 
@@ -418,7 +418,7 @@ describe("sophtron adapter", () => {
 
       expect(response).toEqual({
         id: testUserInstitutionId,
-        user_id: testUserId,
+        userId: testUserId,
         cur_job_id: testJobId,
         status: ConnectionStatus.CONNECTED,
         aggregator: SOPHTRON_ADAPTER_NAME,
@@ -445,7 +445,7 @@ describe("sophtron adapter", () => {
 
       expect(response).toEqual({
         id: testUserInstitutionId,
-        user_id: testUserId,
+        userId: testUserId,
         cur_job_id: testJobId,
         status: ConnectionStatus.FAILED,
         aggregator: SOPHTRON_ADAPTER_NAME,
@@ -473,7 +473,7 @@ describe("sophtron adapter", () => {
 
       expect(response).toEqual({
         id: testUserInstitutionId,
-        user_id: testUserId,
+        userId: testUserId,
         cur_job_id: testJobId,
         status: ConnectionStatus.CREATED,
         aggregator: SOPHTRON_ADAPTER_NAME,
@@ -517,7 +517,7 @@ describe("sophtron adapter", () => {
           },
         ],
         id: testUserInstitutionId,
-        user_id: testUserId,
+        userId: testUserId,
         cur_job_id: testJobId,
         status: ConnectionStatus.CHALLENGED,
         aggregator: SOPHTRON_ADAPTER_NAME,
@@ -559,7 +559,7 @@ describe("sophtron adapter", () => {
           },
         ],
         id: testUserInstitutionId,
-        user_id: testUserId,
+        userId: testUserId,
         cur_job_id: testJobId,
         status: ConnectionStatus.CHALLENGED,
         aggregator: SOPHTRON_ADAPTER_NAME,
@@ -602,7 +602,7 @@ describe("sophtron adapter", () => {
           },
         ],
         id: testUserInstitutionId,
-        user_id: testUserId,
+        userId: testUserId,
         cur_job_id: testJobId,
         status: ConnectionStatus.CHALLENGED,
         aggregator: SOPHTRON_ADAPTER_NAME,
@@ -646,7 +646,7 @@ describe("sophtron adapter", () => {
           },
         ],
         id: testUserInstitutionId,
-        user_id: testUserId,
+        userId: testUserId,
         cur_job_id: testJobId,
         status: ConnectionStatus.CHALLENGED,
         aggregator: SOPHTRON_ADAPTER_NAME,
@@ -687,7 +687,7 @@ describe("sophtron adapter", () => {
           },
         ],
         id: testUserInstitutionId,
-        user_id: testUserId,
+        userId: testUserId,
         cur_job_id: testJobId,
         status: ConnectionStatus.CHALLENGED,
         aggregator: SOPHTRON_ADAPTER_NAME,
@@ -730,7 +730,7 @@ describe("sophtron adapter", () => {
           },
         ],
         id: testUserInstitutionId,
-        user_id: testUserId,
+        userId: testUserId,
         cur_job_id: testJobId,
         status: ConnectionStatus.CHALLENGED,
         aggregator: SOPHTRON_ADAPTER_NAME,
@@ -768,7 +768,7 @@ describe("sophtron adapter", () => {
           },
         ],
         id: testUserInstitutionId,
-        user_id: testUserId,
+        userId: testUserId,
         cur_job_id: testJobId,
         status: ConnectionStatus.CHALLENGED,
         aggregator: SOPHTRON_ADAPTER_NAME,
@@ -796,7 +796,7 @@ describe("sophtron adapter", () => {
 
     expect(response).toEqual({
       id: testUserInstitutionId,
-      user_id: testUserId,
+      userId: testUserId,
       cur_job_id: testJobId,
       status: ConnectionStatus.CREATED,
       aggregator: SOPHTRON_ADAPTER_NAME,
@@ -951,7 +951,7 @@ describe("sophtron adapter", () => {
       expect(response).toEqual(createCustomerData.CustomerID);
     });
 
-    it("returns the provided user_id if creation fails", async () => {
+    it("returns the provided userId if creation fails", async () => {
       server.use(
         http.get(
           SOPHTRON_CUSTOMER_UNIQUE_ID_PATH,
