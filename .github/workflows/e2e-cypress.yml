@@ -50,11 +50,11 @@ jobs:
           check-latest: true
       - run: npm ci
 
-      - run: npm run copyTestPreferences
+      - run: npm run copyE2EPreferences
 
       - name: "Create env file"
         run: |
-          ENV_FILE_PATH=./apps/server/.env
+          ENV_FILE_PATH=./apps/server/env/staging.env
           touch ${ENV_FILE_PATH}
 
           # Vars

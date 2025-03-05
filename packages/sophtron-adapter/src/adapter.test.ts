@@ -3,7 +3,7 @@ import type {
   CreateConnectionRequest,
   UpdateConnectionRequest,
 } from "@repo/utils";
-import { ChallengeType, ConnectionStatus } from "@repo/utils";
+import { ChallengeType, ComboJobTypes, ConnectionStatus } from "@repo/utils";
 
 import {
   SOPHTRON_ANSWER_JOB_MFA_PATH,
@@ -33,7 +33,11 @@ import {
 } from "./test/testData/sophtronMember";
 import { server } from "./test/testServer";
 import { SophtronAdapter } from "./adapter";
-import { SOPHTRON_ADAPTER_NAME, testDataRequestValidatorEndTimeError, testDataValidatorStartTimeError } from "./constants";
+import {
+  SOPHTRON_ADAPTER_NAME,
+  testDataRequestValidatorEndTimeError,
+  testDataValidatorStartTimeError,
+} from "./constants";
 
 import { logClient } from "./test/utils/logClient";
 
@@ -184,17 +188,6 @@ describe("sophtron adapter", () => {
   });
 
   describe("CreateConnection", () => {
-    it("does nothing if there is no job type", async () => {
-      const response = await adapter.CreateConnection(
-        {
-          initial_job_type: undefined,
-        } as CreateConnectionRequest,
-        testUserId,
-      );
-
-      expect(response).toBeUndefined();
-    });
-
     it("uses a None password if there is no password specified", async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let createMemberPayload: any;
@@ -214,8 +207,8 @@ describe("sophtron adapter", () => {
               id: "username",
             },
           ],
-          initial_job_type: "agg",
-          institution_id: testId,
+          jobTypes: [ComboJobTypes.TRANSACTIONS],
+          institutionId: testId,
         } as CreateConnectionRequest,
         testUserId,
       );
@@ -247,8 +240,8 @@ describe("sophtron adapter", () => {
               value: passwordValue,
             },
           ],
-          initial_job_type: "agg",
-          institution_id: testId,
+          jobTypes: [ComboJobTypes.TRANSACTIONS],
+          institutionId: testId,
         } as CreateConnectionRequest,
         testUserId,
       );
@@ -341,6 +334,7 @@ describe("sophtron adapter", () => {
             },
           ],
           id: testId,
+          jobTypes: [ComboJobTypes.TRANSACTIONS],
         } as UpdateConnectionRequest,
         testUserId,
       );
@@ -377,7 +371,7 @@ describe("sophtron adapter", () => {
         id: getMemberData.MemberID,
         institution_code: getMemberData.InstitutionID,
         aggregator: SOPHTRON_ADAPTER_NAME,
-        user_id: testUserId,
+        userId: testUserId,
       });
 
       expect(getMemberParams).toEqual({
@@ -400,7 +394,7 @@ describe("sophtron adapter", () => {
         id: getMemberData.MemberID,
         institution_code: getMemberData.InstitutionID,
         aggregator: SOPHTRON_ADAPTER_NAME,
-        user_id: testUserId,
+        userId: testUserId,
       });
     });
 
@@ -424,7 +418,7 @@ describe("sophtron adapter", () => {
 
       expect(response).toEqual({
         id: testUserInstitutionId,
-        user_id: testUserId,
+        userId: testUserId,
         cur_job_id: testJobId,
         status: ConnectionStatus.CONNECTED,
         aggregator: SOPHTRON_ADAPTER_NAME,
@@ -451,7 +445,7 @@ describe("sophtron adapter", () => {
 
       expect(response).toEqual({
         id: testUserInstitutionId,
-        user_id: testUserId,
+        userId: testUserId,
         cur_job_id: testJobId,
         status: ConnectionStatus.FAILED,
         aggregator: SOPHTRON_ADAPTER_NAME,
@@ -479,7 +473,7 @@ describe("sophtron adapter", () => {
 
       expect(response).toEqual({
         id: testUserInstitutionId,
-        user_id: testUserId,
+        userId: testUserId,
         cur_job_id: testJobId,
         status: ConnectionStatus.CREATED,
         aggregator: SOPHTRON_ADAPTER_NAME,
@@ -523,7 +517,7 @@ describe("sophtron adapter", () => {
           },
         ],
         id: testUserInstitutionId,
-        user_id: testUserId,
+        userId: testUserId,
         cur_job_id: testJobId,
         status: ConnectionStatus.CHALLENGED,
         aggregator: SOPHTRON_ADAPTER_NAME,
@@ -565,7 +559,7 @@ describe("sophtron adapter", () => {
           },
         ],
         id: testUserInstitutionId,
-        user_id: testUserId,
+        userId: testUserId,
         cur_job_id: testJobId,
         status: ConnectionStatus.CHALLENGED,
         aggregator: SOPHTRON_ADAPTER_NAME,
@@ -608,7 +602,7 @@ describe("sophtron adapter", () => {
           },
         ],
         id: testUserInstitutionId,
-        user_id: testUserId,
+        userId: testUserId,
         cur_job_id: testJobId,
         status: ConnectionStatus.CHALLENGED,
         aggregator: SOPHTRON_ADAPTER_NAME,
@@ -652,7 +646,7 @@ describe("sophtron adapter", () => {
           },
         ],
         id: testUserInstitutionId,
-        user_id: testUserId,
+        userId: testUserId,
         cur_job_id: testJobId,
         status: ConnectionStatus.CHALLENGED,
         aggregator: SOPHTRON_ADAPTER_NAME,
@@ -693,7 +687,7 @@ describe("sophtron adapter", () => {
           },
         ],
         id: testUserInstitutionId,
-        user_id: testUserId,
+        userId: testUserId,
         cur_job_id: testJobId,
         status: ConnectionStatus.CHALLENGED,
         aggregator: SOPHTRON_ADAPTER_NAME,
@@ -727,16 +721,16 @@ describe("sophtron adapter", () => {
             id: "TokenRead",
             type: ChallengeType.OPTIONS,
             data: [
-                {
-                  "key": "Please complete verification and click here.",
-                  "value": "token_read",
-                },
-              ],
+              {
+                key: "Please complete verification and click here.",
+                value: "token_read",
+              },
+            ],
             question: `Please approve from your secure device with following token: ${testTokenRead}`,
           },
         ],
         id: testUserInstitutionId,
-        user_id: testUserId,
+        userId: testUserId,
         cur_job_id: testJobId,
         status: ConnectionStatus.CHALLENGED,
         aggregator: SOPHTRON_ADAPTER_NAME,
@@ -774,7 +768,7 @@ describe("sophtron adapter", () => {
           },
         ],
         id: testUserInstitutionId,
-        user_id: testUserId,
+        userId: testUserId,
         cur_job_id: testJobId,
         status: ConnectionStatus.CHALLENGED,
         aggregator: SOPHTRON_ADAPTER_NAME,
@@ -802,7 +796,7 @@ describe("sophtron adapter", () => {
 
     expect(response).toEqual({
       id: testUserInstitutionId,
-      user_id: testUserId,
+      userId: testUserId,
       cur_job_id: testJobId,
       status: ConnectionStatus.CREATED,
       aggregator: SOPHTRON_ADAPTER_NAME,
@@ -957,7 +951,7 @@ describe("sophtron adapter", () => {
       expect(response).toEqual(createCustomerData.CustomerID);
     });
 
-    it("returns the provided user_id if creation fails", async () => {
+    it("returns the provided userId if creation fails", async () => {
       server.use(
         http.get(
           SOPHTRON_CUSTOMER_UNIQUE_ID_PATH,
@@ -1002,7 +996,7 @@ describe("sophtron adapter", () => {
 
     describe("transactionValidator", () => {
       it("returns transaction data, if it passes the transactionValidator", async () => {
-        const validatorSpy = jest.spyOn(dataRequestValidators, 'transactions');
+        const validatorSpy = jest.spyOn(dataRequestValidators, "transactions");
         const req = {
           query: {
             start_time: "testStartTime",
@@ -1036,7 +1030,7 @@ describe("sophtron adapter", () => {
           },
         };
 
-        const validatorResult =dataRequestValidators.transactions(req);
+        const validatorResult = dataRequestValidators.transactions(req);
 
         expect(validatorResult).toEqual(testDataRequestValidatorEndTimeError);
       });
