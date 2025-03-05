@@ -124,13 +124,13 @@ export class SophtronAdapter implements WidgetAdapter {
       jobTypes,
       username,
       password,
-      request.institution_id,
+      request.institutionId,
     );
     if (ret) {
       return {
         id: ret.MemberID,
         cur_job_id: ret.JobID,
-        institution_code: request.institution_id,
+        institution_code: request.institutionId,
         status: ConnectionStatus.CREATED,
         aggregator: SOPHTRON_ADAPTER_NAME,
       };

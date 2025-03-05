@@ -208,7 +208,7 @@ describe("sophtron adapter", () => {
             },
           ],
           jobTypes: [ComboJobTypes.TRANSACTIONS],
-          institution_id: testId,
+          institutionId: testId,
         } as CreateConnectionRequest,
         testUserId,
       );
@@ -241,7 +241,7 @@ describe("sophtron adapter", () => {
             },
           ],
           jobTypes: [ComboJobTypes.TRANSACTIONS],
-          institution_id: testId,
+          institutionId: testId,
         } as CreateConnectionRequest,
         testUserId,
       );
