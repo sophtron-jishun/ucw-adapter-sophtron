@@ -56,27 +56,28 @@ export interface Member {
   last_job_guid?: string; // JOB-asdf
   last_job_status?: string; //
   last_update_time?: string; //
-
-  most_recent_job_guid?: string; // JOB-asdf
-  needs_updated_credentials?: boolean;
-  revision?: number; // 13
-  verification_is_enabled?: boolean;
-  tax_statement_is_enabled?: boolean;
-  aggregated_at?: string | null;
-  background_aggregation_is_disabled?: boolean;
-  connection_status?: string | null | number; //
-  guid: string;
-  id?: string | null;
-  institution_code?: string | null;
-  is_being_aggregated?: boolean | null; //
-  is_managed_by_user?: boolean | null; //
-  is_oauth?: boolean | null; //
-  metadata?: string | null; //
-  name?: string | null; //
-  oauth_window_uri?: string | null; //
-  successfully_aggregated_at?: string | null; //
-  user_guid?: string | null; //
-  user_id?: string | null;
+  selected_account_id?: string | null;
+  most_recent_job_guid?: string // JOB-asdf
+  needs_updated_credentials?: boolean
+  revision?: number // 13
+  verification_is_enabled?: boolean
+  tax_statement_is_enabled?: boolean
+  aggregated_at?: string | null
+  background_aggregation_is_disabled?: boolean
+  connection_status?: string | null | number //
+  raw_status?: string | null //
+  guid: string
+  id?: string | null
+  institution_code?: string | null
+  is_being_aggregated?: boolean | null //
+  is_managed_by_user?: boolean | null //
+  is_oauth?: boolean | null //
+  metadata?: string | null //
+  name?: string | null //
+  oauth_window_uri?: string | null //
+  successfully_aggregated_at?: string | null //
+  user_guid?: string | null //
+  user_id?: string | null
   mfa?: {
     credentials: Credential[];
   };
