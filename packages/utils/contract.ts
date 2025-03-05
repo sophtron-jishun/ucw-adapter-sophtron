@@ -2,10 +2,10 @@
 // you know what you're doing. They may be used by forked Adapter repositories
 
 export enum ComboJobTypes {
-  ACCOUNT_NUMBER = "account_verification",
-  ACCOUNT_OWNER = "identity_verification",
+  ACCOUNT_NUMBER = "accountVerification",
+  ACCOUNT_OWNER = "identityVerification",
   TRANSACTIONS = "transactions",
-  TRANSACTION_HISTORY = "transaction_history",
+  TRANSACTION_HISTORY = "transactionHistory",
 }
 
 export enum WidgetJobTypes {
@@ -27,14 +27,6 @@ export enum VCDataTypes {
   ACCOUNTS = "accounts",
   IDENTITY = "identity",
   TRANSACTIONS = "transactions",
-}
-
-export enum MappedJobTypes {
-  AGGREGATE = "aggregate",
-  ALL = "aggregate_identity_verification",
-  FULLHISTORY = "aggregate_extendedhistory",
-  VERIFICATION = "verification",
-  IDENTITY = "aggregate_identity",
 }
 
 export type AdapterMap = {
