@@ -184,7 +184,7 @@ export class SophtronAdapter implements WidgetAdapter {
       id: m.MemberID,
       institution_code: m.InstitutionID,
       aggregator: SOPHTRON_ADAPTER_NAME,
-      user_id: userId,
+      userId: userId,
     };
   }
 
@@ -295,7 +295,7 @@ export class SophtronAdapter implements WidgetAdapter {
     }
     return {
       id: job.UserInstitutionID,
-      user_id: userId,
+      userId: userId,
       cur_job_id: job.JobID,
       status,
       challenges: challenge?.id ? [challenge] : undefined,
@@ -332,9 +332,9 @@ export class SophtronAdapter implements WidgetAdapter {
   }
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  async ResolveUserId(user_id: string, failIfNotFound: boolean = false) {
-    this.logClient.debug("Resolving UserId: " + user_id);
-    const sophtronUser = await this.apiClient.getCustomerByUniqueName(user_id);
+  async ResolveUserId(userId: string, failIfNotFound: boolean = false) {
+    this.logClient.debug("Resolving UserId: " + userId);
+    const sophtronUser = await this.apiClient.getCustomerByUniqueName(userId);
     if (sophtronUser) {
       this.logClient.trace(
         `Found existing sophtron customer ${sophtronUser.CustomerID}`,
@@ -343,14 +343,14 @@ export class SophtronAdapter implements WidgetAdapter {
     } else if (failIfNotFound) {
       throw new Error("User not resolved successfully");
     }
-    this.logClient.trace(`Creating sophtron user ${user_id}`);
-    const ret = await this.apiClient.createCustomer(user_id);
+    this.logClient.trace(`Creating sophtron user ${userId}`);
+    const ret = await this.apiClient.createCustomer(userId);
     if (ret) {
       return ret.CustomerID;
     }
     this.logClient.trace(
-      `Failed creating sophtron user, using user_id: ${user_id}`,
+      `Failed creating sophtron user, using userId: ${userId}`,
     );
-    return user_id;
+    return userId;
   }
 }
