@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import type { Response } from "express";
+import * as logger from "../infra/logger";
 import he from "he";
 
 import { VCDataTypes } from "@repo/utils";
@@ -30,7 +31,7 @@ export const createAccountsDataHandler = (isVc: boolean) =>
   withValidateAggregatorInPath(async (req: AccountsRequest, res: Response) => {
     const { aggregator, connectionId, userId } = req.params;
 
-    const aggregatorAdapter = createAggregatorWidgetAdapter(aggregator);
+    const aggregatorAdapter = createAggregatorWidgetAdapter({aggregator});
     const aggregatorUserId = await aggregatorAdapter.ResolveUserId(userId);
 
     const dataArgs = {
@@ -52,6 +53,7 @@ export const createAccountsDataHandler = (isVc: boolean) =>
         res.json(data);
       }
     } catch (error) {
+      logger.error('createAccountsDataHandler error', error)
       res.status(400);
       res.send("Something went wrong");
     }
@@ -67,7 +69,7 @@ export const createIdentityDataHandler = (isVc: boolean) =>
   withValidateAggregatorInPath(async (req: IdentityRequest, res: Response) => {
     const { aggregator, connectionId, userId } = req.params;
 
-    const aggregatorAdapter = createAggregatorWidgetAdapter(aggregator);
+    const aggregatorAdapter = createAggregatorWidgetAdapter({aggregator});
     const aggregatorUserId = await aggregatorAdapter.ResolveUserId(userId);
 
     const dataArgs = {
@@ -88,6 +90,7 @@ export const createIdentityDataHandler = (isVc: boolean) =>
         res.json(data);
       }
     } catch (error) {
+      logger.error('createIdentityDataHandler error', error)
       res.status(400);
       res.send("Something went wrong");
     }
@@ -96,6 +99,7 @@ export const createIdentityDataHandler = (isVc: boolean) =>
 export interface TransactionsDataQueryParameters {
   end_time: string;
   start_time: string;
+  connection_id?: string;
 }
 
 export interface TransactionsDataPathParameters {
@@ -108,9 +112,9 @@ export const createTransactionsDataHandler = (isVc: boolean) =>
   withValidateAggregatorInPath(
     async (req: TransactionsRequest, res: Response) => {
       const { accountId, aggregator, userId } = req.params;
-      const { start_time, end_time } = req.query;
-
-      const aggregatorAdapter = createAggregatorWidgetAdapter(aggregator);
+      const { start_time, end_time, connection_id } = req.query;
+  
+      const aggregatorAdapter = createAggregatorWidgetAdapter({aggregator});
       const aggregatorUserId = await aggregatorAdapter.ResolveUserId(userId);
 
       const dataArgs = {
@@ -118,6 +122,7 @@ export const createTransactionsDataHandler = (isVc: boolean) =>
         type: VCDataTypes.TRANSACTIONS,
         userId: aggregatorUserId,
         accountId,
+        connectionId: connection_id,
         startTime: start_time,
         endTime: end_time,
       };
@@ -149,6 +154,7 @@ export const createTransactionsDataHandler = (isVc: boolean) =>
           res.json(data);
         }
       } catch (error) {
+        logger.error('createTransactionsDataHandler error', error)
         res.status(400);
         res.send("Something went wrong");
       }

@@ -8,12 +8,7 @@ import type {
   UpdateConnectionRequest,
   WidgetAdapter,
 } from "@repo/utils";
-import {
-  ChallengeType,
-  ConnectionStatus,
-  JobTypes,
-  mapJobType,
-} from "@repo/utils";
+import { ChallengeType, ConnectionStatus } from "@repo/utils";
 
 import type { AdapterConfig, LogClient } from "./models";
 import { SOPHTRON_ADAPTER_NAME } from "./constants";
@@ -114,10 +109,8 @@ export class SophtronAdapter implements WidgetAdapter {
     request: CreateConnectionRequest,
     userId: string,
   ): Promise<Connection | undefined> {
-    const jobType = request.initial_job_type;
-    if (jobType == null) {
-      return;
-    }
+    const jobTypes = request.jobTypes;
+
     const username = request.credentials.find(
       (item) => item.id === "username",
     ).value;
@@ -128,7 +121,7 @@ export class SophtronAdapter implements WidgetAdapter {
     const password = passwordField ? passwordField.value : "None";
     const ret = await this.apiClient.createMember(
       userId,
-      jobType,
+      jobTypes,
       username,
       password,
       request.institution_id,
@@ -159,7 +152,7 @@ export class SophtronAdapter implements WidgetAdapter {
     userId: string,
   ): Promise<Connection> {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const job_type = mapJobType(JobTypes.AGGREGATE);
+    const jobTypes = request.jobTypes;
 
     const username = request.credentials.find(
       (item) => item.id === "username",
@@ -170,7 +163,7 @@ export class SophtronAdapter implements WidgetAdapter {
     const ret = await this.apiClient.updateMember(
       userId,
       request.id,
-      job_type,
+      jobTypes,
       username,
       password,
     );
@@ -280,11 +273,11 @@ export class SophtronAdapter implements WidgetAdapter {
         } else if (job.TokenRead) {
           challenge.id = "TokenRead";
           challenge.type = ChallengeType.OPTIONS;
-          challenge.question = `Please approve from your secure device with following token: ${job.TokenRead}`
+          challenge.question = `Please approve from your secure device with following token: ${job.TokenRead}`;
           challenge.data = [
             {
-              key: 'Please complete verification and click here.',
-              value: 'token_read',
+              key: "Please complete verification and click here.",
+              value: "token_read",
             },
           ];
         } else if (job.CaptchaImage) {

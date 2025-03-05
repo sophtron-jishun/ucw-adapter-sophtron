@@ -11,7 +11,7 @@ export const searchAndSelectSophtron = () => {
 
 export const enterSophtronCredentials = () => {
   cy.findByLabelText("User ID").type("asdf");
-  cy.findByText("Password").type("asdf");
+  cy.findByLabelText("Password").type("asdf");
 };
 
 export const selectSophtronAccount = () => {

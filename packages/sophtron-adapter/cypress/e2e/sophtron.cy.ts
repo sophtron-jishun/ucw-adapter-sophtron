@@ -1,4 +1,4 @@
-import { JobTypes } from "@repo/utils";
+import { ComboJobTypes } from "@repo/utils";
 import {
   generateDataTests,
   visitAgg,
@@ -13,12 +13,12 @@ import {
   selectSophtronAccount,
 } from "../shared/utils/sophtron";
 
-const makeAConnection = async (jobType) => {
+const makeAConnection = async (jobTypes) => {
   searchAndSelectSophtron();
   enterSophtronCredentials();
   clickContinue();
 
-  if ([JobTypes.VERIFICATION].includes(jobType)) {
+  if (jobTypes.includes(ComboJobTypes.ACCOUNT_NUMBER)) {
     selectSophtronAccount();
     clickContinue();
   }
@@ -26,6 +26,12 @@ const makeAConnection = async (jobType) => {
 };
 
 describe("Sophtron aggregator", () => {
+  generateDataTests({
+    makeAConnection,
+    shouldTestVcEndpoint: true,
+    transactionsQueryString: "?start_time=2021/1/1&end_time=2099/12/31",
+  });
+
   it("refreshes a sophtron connection if given the correct parameters and hides the back button", () => {
     refreshAConnection({
       enterCredentials: enterSophtronCredentials,
@@ -38,7 +44,7 @@ describe("Sophtron aggregator", () => {
     searchByText("Sophtron Bank");
     cy.findByLabelText("Add account with Sophtron Bank").first().click();
     cy.findByLabelText("User ID").type("asdfg12X");
-    cy.findByText("Password").type("asdfg12X");
+    cy.findByLabelText("Password").type("asdfg12X");
     clickContinue();
 
     cy.findByRole("textbox", {
@@ -62,11 +68,5 @@ describe("Sophtron aggregator", () => {
     clickContinue();
 
     expectConnectionSuccess();
-  });
-
-  generateDataTests({
-    makeAConnection,
-    shouldTestVcEndpoint: true,
-    transactionsQueryString: "?start_time=2021/1/1&end_time=2022/1/1",
   });
 });

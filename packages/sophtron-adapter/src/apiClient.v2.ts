@@ -1,4 +1,17 @@
+import { ComboJobTypes } from "@repo/utils";
 import SophtronBaseClient from "./apiClient.base";
+
+const SophtronJobTypeMap = {
+  [ComboJobTypes.ACCOUNT_NUMBER]: "verification",
+  [ComboJobTypes.ACCOUNT_OWNER]: "identity",
+  [ComboJobTypes.TRANSACTIONS]: "aggregate",
+  [ComboJobTypes.TRANSACTION_HISTORY]: "history",
+};
+
+const convertToSophtronJobTypes = (jobTypes: ComboJobTypes[]) =>
+  jobTypes
+    .map((jobType: ComboJobTypes) => SophtronJobTypeMap[jobType])
+    .join("|");
 
 export default class SophtronV2Client extends SophtronBaseClient {
   async getCustomer(customerId) {
@@ -26,27 +39,36 @@ export default class SophtronV2Client extends SophtronBaseClient {
     return await this.get(`/v2/customers/${customerId}/members/${memberId}`);
   }
 
-  async createMember(customerId, jobType, username, password, institutionId) {
-    return await this.post(`/v2/customers/${customerId}/members/${jobType}`, {
-      UserName: username,
-      Password: password,
-      InstitutionID: institutionId,
-    });
-  }
-
-  async updateMember(customerId, memberId, jobType, username, password) {
-    return await this.put(
-      `/v2/customers/${customerId}/members/${memberId}/${jobType}`,
+  async createMember(
+    customerId: string,
+    jobTypes: ComboJobTypes[],
+    username: string,
+    password: string,
+    institutionId: string,
+  ) {
+    return await this.post(
+      `/v2/customers/${customerId}/members/${convertToSophtronJobTypes(jobTypes)}`,
       {
         UserName: username,
         Password: password,
+        InstitutionID: institutionId,
       },
     );
   }
 
-  async refreshMember(customerId, memberId, jobType) {
-    return await this.post(
-      `/v2/customers/${customerId}/members/${memberId}/${jobType}`,
+  async updateMember(
+    customerId: string,
+    memberId: string,
+    jobTypes: ComboJobTypes[],
+    username: string,
+    password: string,
+  ) {
+    return await this.put(
+      `/v2/customers/${customerId}/members/${memberId}/${convertToSophtronJobTypes(jobTypes)}`,
+      {
+        UserName: username,
+        Password: password,
+      },
     );
   }
 
