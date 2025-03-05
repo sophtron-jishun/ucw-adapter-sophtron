@@ -40,7 +40,7 @@ export enum MappedJobTypes {
 export type AdapterMap = {
   dataAdapter?: Function;
   vcAdapter?: Function;
-  createWidgetAdapter: () => WidgetAdapter;
+  createWidgetAdapter: ( { sessionId } : {sessionId?: string | undefined} ) => WidgetAdapter;
 };
 
 export interface Credential {
@@ -131,6 +131,7 @@ export interface Connection {
   last_updated_utc?: string | null;
   background_aggregation_is_disabled?: boolean;
   status?: ConnectionStatus | null;
+  raw_status?: string | null;
   institution_code?: string | null;
   is_being_aggregated?: boolean | null;
   is_oauth?: boolean | null;
@@ -139,6 +140,7 @@ export interface Connection {
   user_id?: string | null;
   challenges?: Challenge[];
   has_accounts?: boolean | null;
+  selected_account_id?: string | null;
   has_transactions?: boolean | null;
   is_authenticated?: boolean | null;
   vc?: string | null;
@@ -228,4 +230,7 @@ export interface WidgetAdapter {
   ) => Promise<Connection | undefined>;
   RouteHandlers?: Record<string, (req: any, res: any) => void>;
   DataRequestValidators?: Record<string, (req: any) => string | undefined>;
+  HandleOauthResponse: (
+    request: any
+  ) => Promise<Connection>;
 }
