@@ -76,7 +76,7 @@ export interface Member {
   oauth_window_uri?: string | null; //
   successfully_aggregated_at?: string | null; //
   user_guid?: string | null; //
-  user_id?: string | null;
+  userId?: string | null;
   mfa?: {
     credentials: Credential[];
   };
