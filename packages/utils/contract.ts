@@ -2,8 +2,8 @@
 // you know what you're doing. They may be used by forked Adapter repositories
 
 export enum ComboJobTypes {
-  ACCOUNT_NUMBER = "accountVerification",
-  ACCOUNT_OWNER = "identityVerification",
+  ACCOUNT_NUMBER = "accountNumber",
+  ACCOUNT_OWNER = "accountOwner",
   TRANSACTIONS = "transactions",
   TRANSACTION_HISTORY = "transactionHistory",
 }
