@@ -148,6 +148,8 @@ export interface Connection {
   vc?: string | null;
   oauth_window_uri?: string | null;
   error_message?: string | null;
+  selected_account_id?: string | null;
+  raw_status?: string | null;
 }
 
 export interface Connections {
