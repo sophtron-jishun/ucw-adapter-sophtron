@@ -298,6 +298,7 @@ export class SophtronAdapter implements WidgetAdapter {
       userId: userId,
       cur_job_id: job.JobID,
       status,
+      raw_status: jobStatus,
       challenges: challenge?.id ? [challenge] : undefined,
       aggregator: SOPHTRON_ADAPTER_NAME,
     };
